@@ -19,4 +19,6 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
+# COPY fluent.conf general.conf kubernetes.conf output.conf prometheus.conf elasticsearch-template.json /fluentd/etc/
+
 CMD exec fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins
