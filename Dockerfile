@@ -1,5 +1,7 @@
 FROM fluent/fluentd:v1.0.2-debian
 
+USER root
+
 RUN apt-get update \
  && buildDeps=" \
       make gcc g++ libc-dev \
@@ -19,8 +21,6 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
-# COPY fluent.conf general.conf kubernetes.conf output.conf prometheus.conf elasticsearch-template.json /fluentd/etc/
-
-COPY entrypoint.sh /bin/
+ENTRYPOINT []
 
 CMD exec fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins
