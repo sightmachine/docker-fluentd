@@ -21,5 +21,4 @@ RUN apt-get update \
 
 # COPY fluent.conf general.conf kubernetes.conf output.conf prometheus.conf elasticsearch-template.json /fluentd/etc/
 
-COPY entrypoint.sh /bin/entrypoint.sh
-CMD exec fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins --no-supervisor
+CMD exec fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins
