@@ -4,7 +4,7 @@ USER root
 
 RUN apt-get update \
  && buildDeps=" \
-      make gcc g++ libc-dev \
+      make gcc g++ libc-dev libffi-dev \
       ruby-dev \
       wget bzip2 gnupg dirmngr \
     " \
