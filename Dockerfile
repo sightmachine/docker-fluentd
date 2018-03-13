@@ -1,4 +1,4 @@
-FROM fluent/fluentd:v1.1.0-debian
+FROM fluent/fluentd:v1.1.1-debian
 
 USER root
 
@@ -14,7 +14,7 @@ RUN apt-get update \
  && gem install fluent-plugin-rewrite-tag-filter -v 2.0.2 \
  && gem install fluent-plugin-prometheus -v 1.0.1 \
  && gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.1 \
- && gem install fluent-plugin-elasticsearch -v 2.6.0 \
+ && gem install fluent-plugin-elasticsearch -v 2.8.1 \
  && apt-get purge -y --auto-remove \
                   -o APT::AutoRemove::RecommendsImportant=false \
                   $buildDeps \
