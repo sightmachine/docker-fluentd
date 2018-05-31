@@ -10,7 +10,7 @@ ENV FLUENTD_DISABLE_BUNDLER_INJECTION 1
 
 COPY Gemfile* /fluentd/
 
-RUN buildDeps="make gcc g++ libc-dev ruby-dev libffi-dev wget bzip2 gnupg dirmngr" \
+RUN buildDeps="make gcc g++ libc-dev ruby-dev libffi-dev" \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
     $buildDeps libjemalloc1 ruby-bundler \
