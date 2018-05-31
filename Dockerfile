@@ -1,26 +1,32 @@
 FROM fluent/fluentd:v1.1.1-debian
 
 USER root
+WORKDIR /home/fluent
+ENV PATH /fluentd/vendor/bundle/ruby/2.3.0/bin:$PATH
+ENV GEM_PATH /fluentd/vendor/bundle/ruby/2.3.0
+ENV GEM_HOME /fluentd/vendor/bundle/ruby/2.3.0
+# skip runtime bundler installation
+ENV FLUENTD_DISABLE_BUNDLER_INJECTION 1
 
-RUN apt-get update \
- && buildDeps=" \
-      make gcc g++ libc-dev libffi-dev \
-      ruby-dev \
-      wget bzip2 gnupg dirmngr \
-    " \
- && apt-get install -y --no-install-recommends $buildDeps \
- && gem install fluent-plugin-record-reformer -v 0.9.1 \
- && gem install fluent-plugin-systemd -v 0.3.1 \
- && gem install fluent-plugin-rewrite-tag-filter -v 2.0.2 \
- && gem install fluent-plugin-prometheus -v 1.0.1 \
- && gem install fluent-plugin-kubernetes_metadata_filter -v 1.0.1 \
- && gem install fluent-plugin-elasticsearch -v 2.8.1 \
- && apt-get purge -y --auto-remove \
-                  -o APT::AutoRemove::RecommendsImportant=false \
-                  $buildDeps \
+COPY Gemfile* /fluentd/
+
+RUN buildDeps="make gcc g++ libc-dev ruby-dev libffi-dev wget bzip2 gnupg dirmngr" \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+    $buildDeps libjemalloc1 ruby-bundler \
+ && bundle config silence_root_warning true \
+ && bundle install --gemfile=/fluentd/Gemfile --path=/fluentd/vendor/bundle \
+ && SUDO_FORCE_REMOVE=yes \
+   apt-get purge -y --auto-remove -o APT::AutoREmove::RecommendsImportant=false $buildDeps \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
-ENTRYPOINT []
+# Copy plugins
+COPY plugins /fluentd/plugins/
+COPY entrypoint.sh /fluentd/entrypoint.sh
 
-CMD exec fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins
+# Environment variables
+ENV FLUENTD_OPT=""
+ENV FLUENTD_CONF="fluent.conf"
+
+ENTRYPOINT ["/fluentd/entrypoint.sh"]
