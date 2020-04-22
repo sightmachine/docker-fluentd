@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+if [ -z ${FLUENT_ELASTICSEARCH_SED_DISABLE} ] ; then
+  if [ -z ${FLUENT_ELASTICSEARCH_USER} ] ; then
+    sed -i  '/FLUENT_ELASTICSEARCH_USER/d' /etc/fluent/config.d/${FLUENTD_CONF}
+  fi
+
+  if [ -z ${FLUENT_ELASTICSEARCH_PASSWORD} ] ; then
+    sed -i  '/FLUENT_ELASTICSEARCH_PASSWORD/d' /etc/fluent/config.d/${FLUENTD_CONF}
+  fi
+fi
+
+exec fluentd -c /etc/fluent/config.d/${FLUENTD_CONF} -p /fluentd/plugins --gemfile /fluentd/Gemfile ${FLUENTD_OPT}
